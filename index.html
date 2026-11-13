@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#815c94" />
+    <script>
+      // 在首帧前确定配色，避免日间/夜间切换闪烁
+      (function () {
+        try {
+          var pref = localStorage.getItem("phytogenesis-theme") || "system";
+          var dark =
+            pref === "dark" ||
+            (pref !== "light" && window.matchMedia("(prefers-color-scheme: dark)").matches);
+          var el = document.documentElement;
+          el.dataset.theme = dark ? "dark" : "light";
+          el.style.colorScheme = dark ? "dark" : "light";
+          var meta = document.querySelector('meta[name="theme-color"]');
+          if (meta) meta.setAttribute("content", dark ? "#5d3f51" : "#815c94");
+        } catch (e) {}
+      })();
+    </script>
+    <script>
+      // 在首帧前确定语言，避免 lang 属性与字体回退闪烁
+      (function () {
+        try {
+          var l = localStorage.getItem("phytogenesis-lang");
+          if (l !== "zh" && l !== "en" && l !== "ja") {
+            var n = ((navigator.languages && navigator.languages[0]) || navigator.language || "zh").toLowerCase();
+            l = n.indexOf("ja") === 0 ? "ja" : n.indexOf("en") === 0 ? "en" : "zh";
+          }
+          document.documentElement.lang = l === "en" ? "en" : l === "ja" ? "ja" : "zh-CN";
+        } catch (e) {}
+      })();
+    </script>
+    <title>植物生成器 · PhytoGenesis — 基于分类学的三维植物形态发生</title>
+    <meta
+      name="description"
+      content="依照植物分类学检索表（种子·果皮·叶脉·茎叶·根）生成三维植物，并演示种子—发芽—成长—开花—结实的生活史全过程。"
+    />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
